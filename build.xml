@@ -6,16 +6,17 @@
   <property name="bin"     location="bin"/>
   <property name="dst"     location="."/>
   <property name="ver"     location="ver"/>
+  <property name="ant"     location="ant"/>
 
   <property name="compiler.source" value="1.6"/>
   <property name="compiler.target" value="1.6"/>
   <property name="compiler.encoding" value="UTF-8"/>
 
-  <property name="main.class" value="moops.Compiler"/>
+  <property name="main.class" value="run"/>
 
-  <import file="ant/build.in.version.xml"/>
+  <import file="${ant}/build.in.version.xml"/>
   <property file="${user.home}/update.properties"/>
-  <import file="ant/build.in.update.xml"/>
+  <import file="${ant}/build.in.update.xml"/>
 
 
   <target name="update" if="moops.update" depends="jar" description="Copy jar product to targets defined in '{user.home}/update.properties' by name 'moops.update'.">
@@ -38,14 +39,14 @@
       </fileset>
     </delete>
 
-    <java outputproperty="lib.manifest.class.path" classname="LibClasspath" failonerror="true" fork="true" classpath="${ant}">
+    <java outputproperty="lib.manifest" classname="LibClasspath" failonerror="true" fork="true" classpath="${ant}" logError="true">
       <arg value="${toString:lib.path}"/>
     </java>
 
     <jar jarfile="${target.jar}" basedir="${bin}" >
       <manifest>
         <attribute name="Main-Class" value="${main.class}"/>
-        <attribute name="Class-Path" value="${lib.manifest.class.path"/>
+        <attribute name="Class-Path" value="${lib.manifest}"/>
       </manifest>
     </jar>
 
