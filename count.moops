@@ -1,0 +1,7 @@
+init:
+ var cc uint
+ assign cc 1
+loop:
+ for cc < 10
+ add cc 1
+ end
