@@ -13,24 +13,39 @@ public enum OpArg {
     FRBX, 
     MS,
     VMPX,
-    CDOP,
+    BOOP,
     RLOP,
     REF,
     PC;
 
-    public Object parameter(Asm asm, Op op, int p, String term, Asm.Synthetic s, File file, int lno, String src){
+    public Object synthesize(Asm asm, Op op, int p, String term, Asm.Synthetic s, File file, int lno, String src){
         switch(this){
         case NAME:
             return term;
         case TYPE:
-            return new OpType(term);
-        default:
+            return OpType.For(term);
+        case STYP:
+            return null;            //////////////////////new Structure
+        case VAL:
             //////////////////////////////////////////////
-            //////////////////////////////////////////////
-            ///////////////////todo///////////////////////
-            //////////////////////////////////////////////
-            //////////////////////////////////////////////
+            //////////////////////////////////////////////op[p].type
             return term;
+            //////////////////////////////////////////////
+            //////////////////////////////////////////////
+        case FRBX:
+        case MS:
+        case VMPX:
+            return Byte.decode(term);
+        case BOOP:
+            return BoolOp.For(term);
+        case RLOP:
+            return RelOp.For(term);
+        case REF:
+            return term;            //////////////////////new Reference
+        case PC:
+            return term;            //////////////////////new Label
+        default:
+            throw new IllegalStateException(this.name());
         }
     }
 }

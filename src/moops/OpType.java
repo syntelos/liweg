@@ -3,7 +3,9 @@ package moops;
 /**
  * 
  */
-public class OpType {
+public class OpType
+    implements AS
+{
 
     public final static OpType BIT = new OpType(1);
 
@@ -21,7 +23,9 @@ public class OpType {
 
     public final static OpType FLOAT = new OpType(true,32,true);
 
-    public enum builtins {
+    public enum builtins
+        implements AS
+    {
         BIT(OpType.BIT),
         UBYTE(OpType.UBYTE),
         UINT(OpType.UINT),
@@ -37,19 +41,90 @@ public class OpType {
             this.identity = id;
         }
 
+        public String toAS(){
+            return this.name().toLowerCase();
+        }
 
-        public final static OpType For(String token){
-            if (null == token)
-                return null;
-            else if (-1 < token.indexOf(':'))
-                return new OpType(token);
+        public final static builtins For(byte code){
+            final boolean signed = (0 > code);
+            final int length = ((code>>1)&0x1F);
+            final boolean fp = (1 == (code & 1));
+
+            if (signed){
+
+                if (fp){
+
+                    if (4 == length){
+
+                        return builtins.FLOAT;
+                    }
+                }
+                else {
+
+                    switch(length){
+                    case 8:
+                        return builtins.SBYTE;
+                    case 16:
+                        return builtins.SINT;
+                    case 32:
+                        return builtins.SLONG;
+                    }
+                }
+            }
             else {
-                try {
-                    return builtins.valueOf(token.toUpperCase()).identity;
+                switch(length){
+                case 1:
+                    return builtins.BIT;
+                case 8:
+                    return builtins.UBYTE;
+                case 16:
+                    return builtins.UINT;
+                case 32:
+                    return builtins.ULONG;
                 }
-                catch (RuntimeException exc){
-                    return null;
-                }
+            }
+            return null;
+        }
+    }
+
+    private final static lxl.Map<Integer,builtins> Map = new lxl.Map();
+    static {
+        for (builtins bi: builtins.values()){
+            Map.put(bi.identity.hashCode(),bi);
+        }
+    }
+
+    public final static builtins Kind(OpType ot){
+        if (null != ot)
+            return Map.get(ot.hashCode());
+        else
+            return null;
+    }
+    public final static OpType Identity(OpType ot){
+        if (null != ot){
+            builtins bi = Map.get(ot.hashCode());
+            if (null != bi)
+                return bi.identity;
+            else
+                return ot;
+        }
+        else
+            return null;
+    }
+
+    public final static OpType For(String token){
+        if (null == token)
+            return null;
+        else if (-1 < token.indexOf(':')){
+
+            return Identity(new OpType(token));
+        }
+        else {
+            try {
+                return builtins.valueOf(token.toUpperCase()).identity;
+            }
+            catch (RuntimeException exc){
+                return null;
             }
         }
     }
@@ -61,9 +136,11 @@ public class OpType {
 
     public final boolean fp;
 
+    public final byte code;
+
 
     public OpType(String longspec){
-        this(longspec.split(":"));
+        this(Asm.Split(longspec,":"));
     }
     public OpType(String... spec){
         super();
@@ -129,6 +206,8 @@ public class OpType {
         else if (1 > this.length){
             throw new IllegalArgumentException(Join(spec,":"));
         }
+
+        this.code = Code(this.signed,this.length,this.fp);
     }
     public OpType(int length){
 
@@ -144,6 +223,7 @@ public class OpType {
             this.signed = (1 < length && s);
             this.length = length;
             this.fp = (4 == length && fp && s);
+            this.code = Code(this.signed,this.length,this.fp);
         }
         else
             throw new IllegalArgumentException();
@@ -151,18 +231,7 @@ public class OpType {
 
 
     public int hashCode(){
-        int h;
-        if (this.signed)
-            h = 0x80;
-        else
-            h = 0;
-
-        h |= (this.length << 1);
-
-        if (this.fp)
-            h |= 1;
-
-        return h;
+        return this.code;
     }
     public boolean equals(Object that){
         if (this == that)
@@ -187,6 +256,13 @@ public class OpType {
     public String toString(){
         return ("type:"+this.signed+":"+this.length+":"+this.fp);
     }
+    public String toAS(){
+        builtins kind = builtins.For(this.code);
+        if (null != kind)
+            return kind.toAS();
+        else
+            return this.toString();
+    }
 
 
     public final static String Join(String[] tokens, String sep){
@@ -204,5 +280,19 @@ public class OpType {
                 return tokens[0]+sep+tokens[1]+sep+tokens[2];
             }
         }
+    }
+    public final static byte Code(boolean signed, int length, boolean fp){
+        int h;
+        if (signed)
+            h = 0x80;
+        else
+            h = 0;
+
+        h |= (length << 1);
+
+        if (fp)
+            h |= 1;
+
+        return (byte)h;
     }
 }

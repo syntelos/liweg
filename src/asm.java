@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 /**
@@ -36,9 +38,10 @@ public class asm {
 
                         asm.assemble();
 
-                        DataOutputStream bin = new DataOutputStream(new FileOutputStream(dst));
+                        //DataOutputStream bin = new DataOutputStream(new FileOutputStream(dst));
+                        PrintWriter bin = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dst),ASCII));
                         try {
-                            asm.writeVM(bin);
+                            asm.writeAS(bin);// (temp test)//asm.writeVM(bin);
                         }
                         finally {
                             bin.flush();

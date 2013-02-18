@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.DataOutputStream;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.util.StringTokenizer;
 
 /**
  * 
@@ -90,7 +91,7 @@ public class Asm
             return new Stream(p,s,(new Object[]{label}));
         }
         case Expr:{
-            String[] tokens = expr.split(" \t");
+            String[] tokens = Asm.Split(expr," \t");
             Op operator = Op.For(tokens[0]);
             if (null == operator){
 
@@ -100,10 +101,10 @@ public class Asm
                     return new Stream(p,Asm.Synthetic.Break,(new Object[]{label}));
                 }
                 else
-                    throw new IllegalStateException(String.format("file:%d:",file,lno,src));
+                    throw new IllegalStateException(String.format("%s:%d: unknown op '%s' in: %s",file,lno,tokens[0],src));
             }
             else {
-                Object[] parameters = operator.parameters(this,tokens,s,file,lno,src);
+                Object[] parameters = operator.synthesize(this,tokens,s,file,lno,src);
                 return new Stream(p,operator,parameters);
             }
         }
@@ -122,24 +123,28 @@ public class Asm
         for (Stream s = this.next; null != s; s = s.next, pc += 1){
 
             if (s.isSynthetic()){
-
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
             }
             else {
-
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
             }
         }
     }
     public void writeAS(PrintWriter out)
         throws IOException
     {
-        if (null != this.next){
+        if (null != this.next && this.next != this){
             this.next.writeAS(out);
         }
     }
     public void writeVM(DataOutputStream out)
         throws IOException
     {
-        if (null != this.next){
+        if (null != this.next && this.next != this){
             this.next.writeVM(out);
         }
     }
@@ -152,6 +157,19 @@ public class Asm
         label = label.trim();
         if (0 < label.length())
             return label;
+        else
+            return null;
+    }
+    protected final static String[] Split(String src, String sep){
+        final StringTokenizer strtok = new StringTokenizer(src,sep);
+        final int len = strtok.countTokens();
+        if (0 < len){
+            String[] re = new String[len];
+            for (int cc = 0; cc < len; cc++){
+                re[cc] = strtok.nextToken();
+            }
+            return re;
+        }
         else
             return null;
     }
