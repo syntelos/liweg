@@ -23,18 +23,17 @@ public class main {
 
     private final static void usage(){
         System.err.printf("Usage%n");
-        System.err.printf("    java -jar moops.jar (asm|run) ? %n");
-        System.err.printf("Produces%n");
-        System.err.printf("    This message.%n");
+        System.err.printf("    java -jar moops.jar (asm|run) ... %n");
         System.exit(1);
     }
 
     public static void main(String[] argv){
-        if (1 == argv.length){
+        if (1 <= argv.length){
             Opt opt = Opt.For(argv[0]);
             switch(opt){
             case ASM:
                 asm.main(Shift(argv));
+                System.exit(0);
                 break;
             case RUN:
                 System.err.println("TODO");
