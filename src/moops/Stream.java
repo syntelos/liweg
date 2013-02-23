@@ -12,7 +12,7 @@ public class Stream {
 
     protected final Op operator;
 
-    protected final Asm.Synthetic synthetic;
+    protected final Synthetic synthetic;
 
     protected final Object[] parameters;
 
@@ -26,7 +26,7 @@ public class Stream {
         this.synthetic = null;
         this.parameters = null;
     }
-    public Stream(Stream p, Asm.Synthetic s, Object[] params){
+    public Stream(Stream p, Synthetic s, Object[] params){
         super();
         this.operator = null;
         this.synthetic = s;

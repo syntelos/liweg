@@ -81,7 +81,7 @@ public enum Op
     public String toAS(){
         return this.name().toLowerCase();
     }
-    public Object[] synthesize(Asm asm, String[] src, Asm.Synthetic s, File file, int lno, String original){
+    public Object[] synthesize(Asm asm, String[] src, Synthetic s, File file, int lno, String original){
 
         final int ilen = ((null != src)?(src.length):(0));
 

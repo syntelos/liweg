@@ -18,7 +18,7 @@ public enum OpArg {
     REF,
     PC;
 
-    public Object synthesize(Asm asm, Op op, int p, String term, Asm.Synthetic s, File file, int lno, String src){
+    public Object synthesize(Asm asm, Op op, int p, String term, Synthetic s, File file, int lno, String src){
         switch(this){
         case NAME:
             return term;
@@ -27,11 +27,7 @@ public enum OpArg {
         case STYP:
             return null;            //////////////////////new Structure
         case VAL:
-            //////////////////////////////////////////////
-            //////////////////////////////////////////////op[p].type
-            return term;
-            //////////////////////////////////////////////
-            //////////////////////////////////////////////
+            return asm.synthesize(op,p,term,s,file,lno,src);
         case FRBX:
         case MS:
         case VMPX:

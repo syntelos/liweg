@@ -15,9 +15,6 @@ import java.util.StringTokenizer;
 public class Asm
     extends Stream
 {
-    public enum Synthetic {
-        Comment, Label, Break, Expr;
-    }
 
 
     public Asm(File file, LineNumberReader src)
@@ -81,7 +78,7 @@ public class Asm
     }
 
 
-    private final Stream synthesize(Stream p, String expr, Asm.Synthetic s, File file, int lno, String src){
+    private final Stream synthesize(Stream p, String expr, Synthetic s, File file, int lno, String src){
         switch(s){
         case Comment:{
             return new Stream(p,s,(new Object[]{expr}));
@@ -98,7 +95,7 @@ public class Asm
                 if ("break".equalsIgnoreCase(tokens[0])){
 
                     String label = Label(tokens[1]);
-                    return new Stream(p,Asm.Synthetic.Break,(new Object[]{label}));
+                    return new Stream(p,Synthetic.Break,(new Object[]{label}));
                 }
                 else
                     throw new IllegalStateException(String.format("%s:%d: unknown op '%s' in: %s",file,lno,tokens[0],src));
@@ -111,6 +108,18 @@ public class Asm
         default:
             throw new IllegalArgumentException(s.name());
         }
+    }
+    /**
+     * Called from OpArg synthesize in case VAL to determine the type
+     * of the target register of this operation.
+     */
+    public Object synthesize(Op op, int p, String term, Synthetic s, File file, int lno, String src){
+
+        //////////////////////////////////////////////
+        //////////////////////////////////////////////
+        return term;
+        //////////////////////////////////////////////
+        //////////////////////////////////////////////
     }
     /**
      * Allocate variable table by name, resolve lables, collapse
