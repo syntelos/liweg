@@ -12,7 +12,7 @@
   <property name="compiler.target" value="1.6"/>
   <property name="compiler.encoding" value="UTF-8"/>
 
-  <property name="main.class" value="run"/>
+  <property name="main.class" value="main"/>
 
   <import file="${ant}/build.in.version.xml"/>
   <property file="${user.home}/update.properties"/>
