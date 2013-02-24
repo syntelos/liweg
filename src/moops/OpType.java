@@ -1,9 +1,11 @@
 package moops;
 
 /**
- * 
+ * @see Op.java
+ * @see OpArg.java
  */
 public class OpType
+    extends Object
     implements AS
 {
 
@@ -230,6 +232,40 @@ public class OpType
     }
 
 
+    public Object valueOf(String term){
+        builtins kind = OpType.Kind(this);
+        if (null != kind){
+            switch(kind){
+            case BIT:
+                if ("0".equals(term))
+                    return Boolean.FALSE;
+                else if ("1".equals(term))
+                    return Boolean.TRUE;
+                else
+                    return new Boolean(term);
+
+            case UBYTE:
+                return new Short(term);
+            case UINT:
+                return new Integer(term);
+            case ULONG:
+                return new Long(term);
+            case SBYTE:
+                return new Byte(term);
+            case SINT:
+                return new Short(term);
+            case SLONG:
+                return new Integer(term);
+            case FLOAT:
+                return new Float(term);
+            default:
+                throw new IllegalStateException(kind.name());
+            }
+        }
+        else {
+            return Integer.decode(term);
+        }
+    }
     public int hashCode(){
         return this.code;
     }
@@ -254,14 +290,15 @@ public class OpType
         return false;
     }
     public String toString(){
-        return ("type:"+this.signed+":"+this.length+":"+this.fp);
+
+        return toAS();
     }
     public String toAS(){
         builtins kind = builtins.For(this.code);
         if (null != kind)
             return kind.toAS();
         else
-            return this.toString();
+            return ("type:"+this.signed+":"+this.length+":"+this.fp);
     }
 
 

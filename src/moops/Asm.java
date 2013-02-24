@@ -15,6 +15,15 @@ import java.util.StringTokenizer;
 public class Asm
     extends Stream
 {
+    /**
+     * Current operation
+     * @see Stream
+     * @see Op
+     * @see OpArg
+     */
+    private Stream synthesis = this;
+
+    private Map<Reference,Register> registers = new Map();
 
 
     public Asm(File file, LineNumberReader src)
@@ -23,7 +32,6 @@ public class Asm
         super();
         if (null != src){
 
-            Stream current = this;
             int cmx;
 
             for (String line = src.readLine(); null != line; line = src.readLine()){
@@ -39,13 +47,13 @@ public class Asm
                             String comment = line.substring(cmx).trim();
                             if (0 < input.length()){
 
-                                current = this.synthesize(current,input,Synthetic.Expr,file,lno,line);
+                                synthesis = this.synthesize(synthesis,input,Synthetic.Expr,file,lno,line);
 
-                                current = this.synthesize(current,comment,Synthetic.Comment,file,lno,line);
+                                synthesis = this.synthesize(synthesis,comment,Synthetic.Comment,file,lno,line);
                             }
                         }
                         else {
-                            current = this.synthesize(current,line,Synthetic.Expr,file,lno,line);
+                            synthesis = this.synthesize(synthesis,line,Synthetic.Expr,file,lno,line);
                         }
                         break;
 
@@ -57,16 +65,16 @@ public class Asm
                                 String comment = line.substring(cmx).trim();
                                 if (0 < input.length()){
 
-                                    current = this.synthesize(current,input,Synthetic.Label,file,lno,line);
+                                    synthesis = this.synthesize(synthesis,input,Synthetic.Label,file,lno,line);
 
-                                    current = this.synthesize(current,comment,Synthetic.Comment,file,lno,line);
+                                    synthesis = this.synthesize(synthesis,comment,Synthetic.Comment,file,lno,line);
                                 }
                             }
                             else
-                                current = this.synthesize(current,line,Synthetic.Comment,file,lno,line);
+                                synthesis = this.synthesize(synthesis,line,Synthetic.Comment,file,lno,line);
                         }
                         else {
-                            current = this.synthesize(current,line,Synthetic.Label,file,lno,line);
+                            synthesis = this.synthesize(synthesis,line,Synthetic.Label,file,lno,line);
                         }
                         break;
                     }
@@ -110,16 +118,50 @@ public class Asm
         }
     }
     /**
-     * Called from OpArg synthesize in case VAL to determine the type
-     * of the target register of this operation.
+     * Called from OpArg synthesize in case VAL to use the type of the
+     * target of the current operation.
      */
     public Object synthesize(Op op, int p, String term, Synthetic s, File file, int lno, String src){
 
-        //////////////////////////////////////////////
-        //////////////////////////////////////////////
-        return term;
-        //////////////////////////////////////////////
-        //////////////////////////////////////////////
+        return this.typeOfTargetOf().valueOf(term);
+    }
+    /**
+     * Called by synthesize called from OpArg synthesize to determine
+     * the type of the target of this operation.
+     * 
+     * The type of an operator value operand ({@link OpArg#VAL}) is
+     * the type of the destination operand.  See {@link
+     * Stream#target()}.
+     */
+    public OpType typeOfTargetOf(){
+
+        return this.typeOf(this.targetOf());
+    }
+    public Reference targetOf(){
+
+        return this.synthesis.target();
+    }
+    public OpType typeOf(Reference reference){
+
+        Register dstr = this.get(reference);
+
+        if (null != dstr)
+            return dstr.type;
+        else
+            throw new IllegalStateException(reference.label);
+    }
+    public Register get(Reference reference){
+
+        return this.registers.get(reference);
+    }
+    public Register create(Reference name, OpType type){
+
+        Register r = this.registers.get(name);
+        if (null == r){
+            r = new Register(name,type);
+            this.registers.put(name,r);
+        }
+        return r;
     }
     /**
      * Allocate variable table by name, resolve lables, collapse
@@ -137,9 +179,59 @@ public class Asm
                 //////////////////////////////////////////////////
             }
             else {
-                //////////////////////////////////////////////////
-                //////////////////////////////////////////////////
-                //////////////////////////////////////////////////
+                switch(s.operator){
+                case VAR:{
+                    Reference name = s.parameter(0); // type coersion
+                    OpType type = s.parameter(1);
+                    this.create(name,type);
+                    break;
+                }
+                case STRUCT:
+                    break;
+                case ASSIGNV:
+                case ASSIGNR:
+                    break;
+                case ADDV:
+                case ADDR:
+                    break;
+                case SUBV:
+                case SUBR:
+                    break;
+                case MULV:
+                case MULR:
+                    break;
+                case DIVV:
+                case DIVR:
+                    break;
+                case BLITV:
+                case BLITR:
+                case SHOWV:
+                case SHOWR:
+                    break;
+                case WAITV:
+                case WAITR:
+                case RUNV:
+                case RUNR:
+                    break;
+                case GOTO:
+                case IF:
+                case IFCV:
+                case IFCR:
+                case IFRV:
+                case IFRR:
+                case ELSE:
+                case END:
+                case FORCV:
+                case FORCR:
+                case FORRV:
+                case FORRR:
+                case WHILE:
+                case WHILECV:
+                case WHILECR:
+                case WHILERV:
+                case WHILERR:
+                    break;
+                }
             }
         }
     }

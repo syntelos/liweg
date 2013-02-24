@@ -3,7 +3,10 @@ package moops;
 import java.io.File;
 
 /**
- * 
+ * Op parameters synthesize parameter values for Stream instances
+ *
+ * @see Op.java
+ * @see OpType.java
  */
 public enum OpArg {
     NAME,
@@ -15,13 +18,16 @@ public enum OpArg {
     VMPX,
     BOOP,
     RLOP,
-    REF,
-    PC;
+    REF;
 
+    /**
+     * Produce parameter values for Stream instances
+     * @return parameter values 
+     */
     public Object synthesize(Asm asm, Op op, int p, String term, Synthetic s, File file, int lno, String src){
         switch(this){
         case NAME:
-            return term;
+            return new Reference(term);
         case TYPE:
             return OpType.For(term);
         case STYP:
@@ -37,9 +43,7 @@ public enum OpArg {
         case RLOP:
             return RelOp.For(term);
         case REF:
-            return term;            //////////////////////new Reference
-        case PC:
-            return term;            //////////////////////new Label
+            return new Reference(term);
         default:
             throw new IllegalStateException(this.name());
         }

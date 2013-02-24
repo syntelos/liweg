@@ -6,7 +6,7 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
 /**
- * 
+ * Lined list of assembly language 
  */
 public class Stream {
 
@@ -44,6 +44,16 @@ public class Stream {
     }
 
 
+    /**
+     * The target of an operation is the type of the destination
+     * operand, i.e. the semantic write-store target.
+     */
+    public Reference target(){
+        return this.parameter(0);
+    }
+    public <T> T parameter(int idx){
+        return (T)this.parameters[0];
+    }
     public void destroy(){
         this.prev = null;
         Stream next = this.next;
