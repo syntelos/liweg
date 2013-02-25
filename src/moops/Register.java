@@ -37,6 +37,13 @@ public final class Register
             return (this.label.equals(that.label) &&
                     this.type == that.type);
     }
+    public boolean equals(Reference name, OpType type){
+        if (null == name || null == type)
+            return false;
+        else
+            return (this.label.equals(name) &&
+                    this.type == type);
+    }
     public String toString(){
 
         return this.toAS();

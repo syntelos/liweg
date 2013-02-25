@@ -51,8 +51,14 @@ public class Stream {
     public Reference target(){
         return this.parameter(0);
     }
+    public boolean hasParameter(int idx){
+        return (-1 < idx && idx < this.parameters.length);
+    }
     public <T> T parameter(int idx){
-        return (T)this.parameters[0];
+        return (T)this.parameters[idx];
+    }
+    public Constant constant(int idx, OpType type){
+        return (Constant)(this.parameters[idx] = new Constant( (Number)this.parameters[idx],type));
     }
     public void destroy(){
         this.prev = null;
@@ -78,13 +84,16 @@ public class Stream {
         else if (null != this.synthetic){
             switch(this.synthetic){
             case Comment:
-                out.printf("%s%n",this.parameters[0]);
+                out.printf("%s%n",this.parameter(0));
                 break;
             case Label:
-                out.printf("%s%n",this.parameters[0]);
+                out.printf("%s%n",this.parameter(0));
                 break;
             case Break:
-                out.printf(" break %s%n",this.parameters[0]);
+                if (this.hasParameter(0))
+                    out.printf(" break %s%n",this.parameter(0));
+                else
+                    out.printf(" break%n");
                 break;
             }
         }

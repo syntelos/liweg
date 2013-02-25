@@ -4,7 +4,7 @@ package moops;
  * @see Op.java
  * @see OpArg.java
  */
-public class OpType
+public final class OpType
     extends Object
     implements AS
 {
@@ -24,6 +24,17 @@ public class OpType
     public final static OpType SLONG = new OpType(true,32);
 
     public final static OpType FLOAT = new OpType(true,32,true);
+    /*
+     * Partial set of OpArg symbol types
+     */
+    public final static OpType NAME = OpType.UINT;
+    public final static OpType TYPE = OpType.UBYTE;
+    public final static OpType FRBX = OpType.UINT;
+    public final static OpType MS = OpType.UINT;
+    public final static OpType VMPX = OpType.UINT;
+    public final static OpType BOOP = OpType.UBYTE;
+    public final static OpType RLOP = OpType.UBYTE;
+    public final static OpType REF = OpType.UINT;
 
     public enum builtins
         implements AS
@@ -232,6 +243,13 @@ public class OpType
     }
 
 
+    /**
+     * @return Null or type alias.
+     */
+    public builtins kind(){
+
+        return OpType.Kind(this);
+    }
     public Object valueOf(String term){
         builtins kind = OpType.Kind(this);
         if (null != kind){
@@ -245,17 +263,17 @@ public class OpType
                     return new Boolean(term);
 
             case UBYTE:
-                return new Short(term);
+                return Integer.decode(term);
             case UINT:
-                return new Integer(term);
+                return Long.decode(term);
             case ULONG:
-                return new Long(term);
+                return Long.decode(term);
             case SBYTE:
-                return new Byte(term);
+                return Integer.decode(term);
             case SINT:
-                return new Short(term);
+                return Integer.decode(term);
             case SLONG:
-                return new Integer(term);
+                return Integer.decode(term);
             case FLOAT:
                 return new Float(term);
             default:

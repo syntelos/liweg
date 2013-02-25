@@ -1,0 +1,9 @@
+                                      -*-outline-*-
+
+* Assemble 
+** Synthetics
+** Validate blocks
+** Define label offsets and references
+
+* Write VM
+** in Stream & Asm

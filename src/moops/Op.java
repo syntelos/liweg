@@ -78,6 +78,40 @@ public enum Op
     }
 
 
+    public boolean isBlock(){
+        return (this.isBlockStart() || this.isBlockEnd());
+    }
+    public boolean isBlockStart(){
+        switch(this){
+        case IF:
+        case IFCV:
+        case IFCR:
+        case IFRV:
+        case IFRR:
+        case ELSE:
+        case FORCV:
+        case FORCR:
+        case FORRV:
+        case FORRR:
+        case WHILE:
+        case WHILECV:
+        case WHILECR:
+        case WHILERV:
+        case WHILERR:
+            return true;
+        default:
+            return false;
+        }
+    }
+    public boolean isBlockEnd(){
+        switch(this){
+        case END:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     public String toAS(){
         return this.name().toLowerCase();
     }
