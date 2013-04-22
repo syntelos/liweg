@@ -1,56 +1,79 @@
 package moops;
 
 /**
+ * Bit string, integer and floating point register (variable) type
+ * having length from one to sixty four bits.
+ * 
+ * <h3>Byte code format</h3>
+ * 
+ * A single byte encodes all data types as signed or unsigned, integer
+ * or floating point bit strings having length one to sixty four bits.
+ * Floating point types have length thirty two or sixty four,
+ * exclusively.
+ * 
+ * <table>
+ * <th>
+ * <td> 7 </td>
+ * <td> 6 ... 1 </td>
+ * <td> 0 </td>
+ * </th>
+ * <tr>
+ * <td> Sign </td>
+ * <td> Length </td>
+ * <td> FP </td>
+ * </tr>
+ * </table>
+ * 
  * @see Op.java
  * @see OpArg.java
  */
-public final class OpType
+public final class DataType
     extends Object
     implements AS
 {
 
-    public final static OpType BIT = new OpType(1);
+    public final static DataType BIT = new DataType(1);
 
-    public final static OpType UBYTE = new OpType(false,8);
+    public final static DataType UBYTE = new DataType(false,8);
 
-    public final static OpType UINT = new OpType(false,16);
+    public final static DataType UINT = new DataType(false,16);
 
-    public final static OpType ULONG = new OpType(false,32);
+    public final static DataType ULONG = new DataType(false,32);
 
-    public final static OpType SBYTE = new OpType(true,8);
+    public final static DataType SBYTE = new DataType(true,8);
 
-    public final static OpType SINT = new OpType(true,16);
+    public final static DataType SINT = new DataType(true,16);
 
-    public final static OpType SLONG = new OpType(true,32);
+    public final static DataType SLONG = new DataType(true,32);
 
-    public final static OpType FLOAT = new OpType(true,32,true);
+    public final static DataType FLOAT = new DataType(true,32,true);
     /*
      * Partial set of OpArg symbol types
      */
-    public final static OpType NAME = OpType.UINT;
-    public final static OpType TYPE = OpType.UBYTE;
-    public final static OpType FRBX = OpType.UINT;
-    public final static OpType MS = OpType.UINT;
-    public final static OpType VMPX = OpType.UINT;
-    public final static OpType BOOP = OpType.UBYTE;
-    public final static OpType RLOP = OpType.UBYTE;
-    public final static OpType REF = OpType.UINT;
+    public final static DataType NAME = DataType.UINT;
+    public final static DataType TYPE = DataType.UBYTE;
+    public final static DataType FRBX = DataType.UINT;
+    public final static DataType MS = DataType.UINT;
+    public final static DataType VMPX = DataType.UINT;
+    public final static DataType BOOP = DataType.UBYTE;
+    public final static DataType RLOP = DataType.UBYTE;
+    public final static DataType REF = DataType.UINT;
 
     public enum builtins
         implements AS
     {
-        BIT(OpType.BIT),
-        UBYTE(OpType.UBYTE),
-        UINT(OpType.UINT),
-        ULONG(OpType.ULONG),
-        SBYTE(OpType.SBYTE),
-        SINT(OpType.SINT),
-        SLONG(OpType.SLONG),
-        FLOAT(OpType.FLOAT);
+        BIT(DataType.BIT),
+        UBYTE(DataType.UBYTE),
+        UINT(DataType.UINT),
+        ULONG(DataType.ULONG),
+        SBYTE(DataType.SBYTE),
+        SINT(DataType.SINT),
+        SLONG(DataType.SLONG),
+        FLOAT(DataType.FLOAT);
 
-        public final OpType identity;
+        public final DataType identity;
 
-        private builtins(OpType id){
+        private builtins(DataType id){
             this.identity = id;
         }
 
@@ -107,13 +130,13 @@ public final class OpType
         }
     }
 
-    public final static builtins Kind(OpType ot){
+    public final static builtins Kind(DataType ot){
         if (null != ot)
             return Map.get(ot.hashCode());
         else
             return null;
     }
-    public final static OpType Identity(OpType ot){
+    public final static DataType Identity(DataType ot){
         if (null != ot){
             builtins bi = Map.get(ot.hashCode());
             if (null != bi)
@@ -125,12 +148,12 @@ public final class OpType
             return null;
     }
 
-    public final static OpType For(String token){
+    public final static DataType For(String token){
         if (null == token)
             return null;
         else if (-1 < token.indexOf(':')){
 
-            return Identity(new OpType(token));
+            return Identity(new DataType(token));
         }
         else {
             try {
@@ -152,10 +175,10 @@ public final class OpType
     public final byte code;
 
 
-    public OpType(String longspec){
+    public DataType(String longspec){
         this(Asm.Split(longspec,":"));
     }
-    public OpType(String... spec){
+    public DataType(String... spec){
         super();
         switch (spec.length){
         case 0:
@@ -222,15 +245,15 @@ public final class OpType
 
         this.code = Code(this.signed,this.length,this.fp);
     }
-    public OpType(int length){
+    public DataType(int length){
 
         this(true,length,false);
     }
-    public OpType(boolean s, int length){
+    public DataType(boolean s, int length){
 
         this(s,length,false);
     }
-    public OpType(boolean s, int length, boolean fp){
+    public DataType(boolean s, int length, boolean fp){
         super();
         if (0 < length){
             this.signed = (1 < length && s);
@@ -248,10 +271,10 @@ public final class OpType
      */
     public builtins kind(){
 
-        return OpType.Kind(this);
+        return DataType.Kind(this);
     }
     public Object valueOf(String term){
-        builtins kind = OpType.Kind(this);
+        builtins kind = DataType.Kind(this);
         if (null != kind){
             switch(kind){
             case BIT:
@@ -290,12 +313,12 @@ public final class OpType
     public boolean equals(Object that){
         if (this == that)
             return true;
-        else if (that instanceof OpType)
-            return this.equals( (OpType)that);
+        else if (that instanceof DataType)
+            return this.equals( (DataType)that);
         else
             return false;
     }
-    public boolean equals(OpType that){
+    public boolean equals(DataType that){
         if (this == that)
             return true;
         else if (this.signed == that.signed){

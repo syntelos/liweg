@@ -1,5 +1,7 @@
 package moops;
 
+import java.util.StringTokenizer;
+
 /**
  * Assembly language references within the instruction stream and to
  * registers are label strings.
@@ -8,29 +10,108 @@ public final class Reference
     extends Object
     implements AS, Comparable<Reference>
 {
+    public enum Type {
+        Label, Array, Table, PC;
+    }
+
+    public final static class Array
+        extends Object
+    {
+        public final String label;
+        public final int x;
+
+        public Array(StringTokenizer strtok){
+            super();
+            this.label = strtok.nextToken();
+            this.x = Integer.parseInt(strtok.nextToken());
+        }
+
+        public String toString(){
+
+            return String.format("%s[%d]",this.label,this.x);
+        }
+    }
+    public final static class Table
+        extends Object
+    {
+        public final String label;
+        public final int x, y;
+
+        public Table(StringTokenizer strtok){
+            super();
+            this.label = strtok.nextToken();
+            this.x = Integer.parseInt(strtok.nextToken());
+            this.y = Integer.parseInt(strtok.nextToken());
+        }
+
+        public String toString(){
+
+            return String.format("%s[%d][%d]",this.label,this.x,this.y);
+        }
+    }
+
+
+    public final Argument argument;
+
+    public final String string;
+
+    public final Type type;
 
     public final String label;
 
-    public final int pc;
+    public final Array array;
+
+    public final Table table;
 
 
-    public Reference(String label){
+    public Reference(Argument argument, String string){
         super();
-        this.label = label;
-        this.pc = -1;
-    }
-    public Reference(int pc){
-        super();
-        this.label = null;
-        this.pc = pc;
+        if (null != argument && null != string && 0 < string.length()){
+            this.argument = argument;
+            this.string = string;
+
+            StringTokenizer strtok = new StringTokenizer(string,"][ ");
+            switch(strtok.countTokens()){
+            case 1:
+                {
+                    this.label = strtok.nextToken();
+                    this.table = null;
+                    this.array = null;
+                    this.type = Type.Label;
+                }
+                break;
+            case 2:
+                {
+                    Array array = new Array(strtok);
+
+                    this.label = array.label;
+                    this.table = null;
+                    this.array = array;
+                    this.type = Type.Array;
+                }
+                break;
+            case 3:
+                {
+                    Table table = new Table(strtok);
+
+                    this.label = table.label;
+                    this.table = table;
+                    this.array = null;
+                    this.type = Type.Table;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException(string);
+            }
+        }
+        else
+            throw new IllegalArgumentException();
     }
 
 
     public int hashCode(){
-        if (null != this.label)
-            return this.label.hashCode();
-        else
-            return this.pc;
+
+        return this.label.hashCode();
     }
     public boolean equals(Object that){
         if (this == that)
@@ -45,20 +126,16 @@ public final class Reference
             return 0;
         else if (null == that)
             return +1;
-        else if (null != this.label && null != that.label)
-            return this.label.compareTo(that.label);
-        else if (null != that.label || this.pc < that.pc)
-            return -1;
-        else if (this.pc > that.pc)
-            return +1;
         else
-            return 0;
+            return this.label.compareTo(that.label);
     }
     public String toString(){
-        if (null != this.label)
-            return this.label;
+        if (null != this.table)
+            return this.table.toString();
+        else if (null != this.array)
+            return this.array.toString();
         else
-            return String.format("ref-pc:%d",this.pc);
+            return this.label;
     }
     public String toAS(){
 

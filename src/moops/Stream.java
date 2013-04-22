@@ -6,44 +6,60 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
 /**
- * Lined list of assembly language 
+ * <h3>Instruction stream format</h3>
+ * 
+ * Each component of the instruction stream is a byte, with the
+ * exception of the data-value, which is one to eight bytes as defined
+ * by the data-type.
+ * 
+ * <pre>
+ * op-code ( stream-parameter data-type data-value )*
+ * </pre>
  */
-public class Stream {
-
+public class Stream
+    extends Object
+{
+    /*
+     * One of operator or synthetic is required
+     */
     protected final Op operator;
 
-    protected final Synthetic synthetic;
-
-    protected final Object[] parameters;
+    protected final Parameter.Value[] parameters;
 
     protected Stream prev, next;
+    /*
+     * Numbered from zero
+     */
+    private int pc;
 
 
 
     protected Stream(){
         super();
         this.operator = null;
-        this.synthetic = null;
         this.parameters = null;
     }
-    public Stream(Stream p, Synthetic s, Object[] params){
-        super();
-        this.operator = null;
-        this.synthetic = s;
-        this.parameters = params;
-        this.prev = p;
-        p.next = this;
-    }
-    public Stream(Stream p, Op op, Object[] params){
+    public Stream(Stream p, Op op, Parameter.Value[] params){
         super();
         this.operator = op;
-        this.synthetic = null;
         this.parameters = params;
         this.prev = p;
         p.next = this;
     }
 
 
+    public int getPC(){
+
+        return this.pc;
+    }
+    public boolean setPC(int pc){
+        if (0 > this.pc){
+            this.pc = pc;
+            return true;
+        }
+        else
+            return false;
+    }
     /**
      * The target of an operation is the type of the destination
      * operand, i.e. the semantic write-store target.
@@ -57,9 +73,6 @@ public class Stream {
     public <T> T parameter(int idx){
         return (T)this.parameters[idx];
     }
-    public Constant constant(int idx, OpType type){
-        return (Constant)(this.parameters[idx] = new Constant( (Number)this.parameters[idx],type));
-    }
     public void destroy(){
         this.prev = null;
         Stream next = this.next;
@@ -69,36 +82,19 @@ public class Stream {
                 next.destroy();
         }
     }
-    public boolean isSynthetic(){
-        return (null == this.operator && null != this.synthetic);
-    }
     public boolean isHead(){
-        return (null == this.operator && null == this.parameters && null == this.synthetic);
+        return (null == this.operator && null == this.parameters);
     }
     public void writeAS(PrintWriter out)
         throws IOException
     {
         if (null != this.operator){
+
             out.printf(" %s %s%n",this.operator.toAS(),this.operator.toAS(this.parameters));
-        }
-        else if (null != this.synthetic){
-            switch(this.synthetic){
-            case Comment:
-                out.printf("%s%n",this.parameter(0));
-                break;
-            case Label:
-                out.printf("%s%n",this.parameter(0));
-                break;
-            case Break:
-                if (this.hasParameter(0))
-                    out.printf(" break %s%n",this.parameter(0));
-                else
-                    out.printf(" break%n");
-                break;
-            }
         }
 
         if (null != this.next && this.next != this){
+
             this.next.writeAS(out);
         }
     }
@@ -106,10 +102,12 @@ public class Stream {
         throws IOException
     {
         if (null != this.operator){
+
             out.write(this.operator.opcode);
         }
 
         if (null != this.next && this.next != this){
+
             this.next.writeVM(out);
         }
     }

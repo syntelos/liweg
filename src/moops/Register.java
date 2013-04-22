@@ -7,10 +7,10 @@ public final class Register
 
     public final String label;
 
-    public final OpType type;
+    public final DataType type;
 
 
-    public Register(Reference ref, OpType type){
+    public Register(Reference ref, DataType type){
         super();
         this.label = ref.label;
         this.type = type;
@@ -37,7 +37,7 @@ public final class Register
             return (this.label.equals(that.label) &&
                     this.type == that.type);
     }
-    public boolean equals(Reference name, OpType type){
+    public boolean equals(Reference name, DataType type){
         if (null == name || null == type)
             return false;
         else

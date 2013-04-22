@@ -1,5 +1,36 @@
                                       -*-outline-*-
 
+* Stream parameter
+** Collapse Argument classes to Parameter instances
+** Literal and reference types support op-arg <ref|val>
+*** Reference types carry into VM RT
+*** Data types carry into VM RT
+
+* Structure
+** FRAMEBUFFERS
+** PROGRAMS
+*** REGISTERS
+**** Data, Array, Table
+**** Registers = Stack
+
+* Data types commute
+** Arithmetic applies to any data type with truncated values
+
+* Data
+** Numeric
+** Bit strings
+
+* Reference spaces
+** Framebuffer (name/index)
+** Program (name/index)
+** Register (name/index)
+** Local code offset (label/index)
+
+* Call & Return (Program)
+** SFR preceeds RUN to allocate registers in the child's space
+** SFR_VAL by value
+** SFR_REF by reference
+
 * Assemble 
 ** Synthetics
 ** Validate blocks
@@ -7,3 +38,32 @@
 
 * Write VM
 ** in Stream & Asm
+
+* Switch op (r/v)
+** switch (r)
+** case (const)
+** case-default
+
+* Design
+** Instruction variable stream
+*** formating dependent on instruction coding (instance and context)
+** Register machine
+*** ad hoc register set
+*** special function registers (contextual reserved registers)
+*** program and framebuffer management
+** Structured assembler language & machine code
+*** Branching primitives 
+*** Block structures (begin, end)
+*** Conditional branching primitives for boolean and relational ops
+** Reference and literal data
+*** See "Reference" and "Register"
+*** References are labels (names) and have no types
+*** References refer to (name) registers
+*** Registers are labels with types
+*** Reference types are determined by analysis of the instruction stream for a destination register
+*** Registers may be re/declared using the "var" instruction
+*** Subequent references are likewise re/sized
+** Bit string register variable (type) having length one to sixty four bits
+*** See "OpType"
+** Synthetic instructions comment, label, break and expr
+*** See "Synthetic"
