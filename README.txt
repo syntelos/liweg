@@ -1,5 +1,5 @@
 
-liweg, a light weight graphical machine
+liweg, a light weight graphical virtual machine
 
   Far smaller than many virtual machines, liweg is designed for
   application programming on a very small scale.  

@@ -1,0 +1,25 @@
+/*                     -*-C-*-
+ */
+liweg display(){
+    blit( 0, 0, register_x, register);
+}
+
+liweg main(){
+    framebuffers(1);
+    data cc uint;
+    array glyph8 type:4 8;
+    glyph8 = {
+        0b0110,
+        0b1001,
+        0b1001,
+        0b1001,
+        0b1001,
+        0b1001,
+        0b1001,
+        0b0110
+    };
+
+    eval(glyph8, display);
+
+    show(0);
+}

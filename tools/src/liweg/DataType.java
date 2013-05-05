@@ -167,6 +167,54 @@ public final class DataType
             }
         }
     }
+    public final static boolean Sign(String token){
+        if (null == token || 1 > token.length())
+            return false;
+        else if (1 == token.length()){
+            switch(token.charAt(0)){
+            case 's':
+            case 'S':
+                return true;
+            case 'u':
+            case 'U':
+                return false;
+            default:
+                throw new IllegalArgumentException(token);
+            }
+        }
+        else if ("signed".equals(token) || "true".equals(token))
+            return true;
+        else if ("unsigned".equals(token) || "false".equals(token))
+            return false;
+        else
+            throw new IllegalArgumentException(token);
+    }
+    public final static boolean FP(String token){
+        if (null == token || 1 > token.length())
+            return false;
+        else if (1 == token.length()){
+            switch(token.charAt(0)){
+            case 'f':
+            case 'F':
+                return true;
+            case 'b':
+            case 'B':
+            case 'i':
+            case 'I':
+            case 's':
+            case 'S':
+                return false;
+            default:
+                throw new IllegalArgumentException(token);
+            }
+        }
+        else if ("float".equals(token) || "true".equals(token))
+            return true;
+        else if ("int".equals(token) || "integer".equals(token) || "bit".equals(token) || "string".equals(token) || "false".equals(token))
+            return false;
+        else
+            throw new IllegalArgumentException(token);
+    }
 
 
     public final boolean signed;
@@ -198,28 +246,28 @@ public final class DataType
                 this.fp = false;
             }
             else {
-                this.signed = new Boolean(spec[0]);
+                this.signed = Sign(spec[0]);
                 this.length = Integer.parseInt(spec[1]);
                 this.fp = false;
             }
             break;
         case 3:
             if ("type".equals(spec[0])){
-                this.signed = new Boolean(spec[1]);
+                this.signed = Sign(spec[1]);
                 this.length = Integer.parseInt(spec[2]);
                 this.fp = false;
             }
             else {
-                this.signed = new Boolean(spec[0]);
+                this.signed = Sign(spec[0]);
                 this.length = Integer.parseInt(spec[1]);
-                this.fp = new Boolean(spec[2]);
+                this.fp = FP(spec[2]);
             }
             break;
         case 4:
             if ("type".equals(spec[0])){
-                this.signed = new Boolean(spec[1]);
+                this.signed = Sign(spec[1]);
                 this.length = Integer.parseInt(spec[2]);
-                this.fp = new Boolean(spec[3]);
+                this.fp = FP(spec[3]);
             }
             else {
                 throw new IllegalArgumentException(Join(spec,":"));

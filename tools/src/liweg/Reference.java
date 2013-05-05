@@ -14,42 +14,92 @@ public final class Reference
     implements AS, Comparable<Reference>
 {
     public enum Type {
-        Label, Array, Table, PC;
+        DATA, ARRAY, TABLE, STRUCT;
+
+
+        public Parameter parameter(){
+            switch(this){
+            case DATA:
+                return Parameter.REG_DATA;
+            case ARRAY:
+                return Parameter.REG_ARRAY;
+            case TABLE:
+                return Parameter.REG_TABLE;
+            case STRUCT:
+                return Parameter.REG_STRUCT;
+            default:
+                throw new IllegalStateException(this.name());
+            }
+        }
     }
 
-    public final static class Array
+    public abstract static class SubReference
         extends Object
     {
-        public final String label;
-        public final int x;
 
-        public Array(StringTokenizer strtok){
+        private final static Object RegData(String string){
+            try {
+                return new Integer(string);
+            }
+            catch (NumberFormatException notdata){
+
+                return new Reference(Argument.REG,string);
+            }
+        }
+
+        public final static class Array
+            extends SubReference
+        {
+            public Array(StringTokenizer strtok){
+                super(strtok);
+            }
+
+            public String toString(){
+
+                return String.format("%s[%s]",this.label,this.x);
+            }
+        }
+        public final static class Table
+            extends SubReference
+        {
+            public final Object y;
+
+            public Table(StringTokenizer strtok){
+                super(strtok);
+                this.y = RegData(strtok.nextToken());
+            }
+
+            public String toString(){
+
+                return String.format("%s[%s][%s]",this.label,this.x,this.y);
+            }
+        }
+        public final static class Struct
+            extends SubReference
+        {
+            public Struct(StringTokenizer strtok){
+                super(strtok);
+            }
+
+            public String toString(){
+
+                return String.format("%s.%s",this.label,this.x);
+            }
+        }
+
+
+        public final String label;
+        public final Object x;
+
+        public SubReference(StringTokenizer strtok){
             super();
             this.label = strtok.nextToken();
-            this.x = Integer.parseInt(strtok.nextToken());
+            this.x = RegData(strtok.nextToken());
         }
 
         public String toString(){
 
             return String.format("%s[%d]",this.label,this.x);
-        }
-    }
-    public final static class Table
-        extends Object
-    {
-        public final String label;
-        public final int x, y;
-
-        public Table(StringTokenizer strtok){
-            super();
-            this.label = strtok.nextToken();
-            this.x = Integer.parseInt(strtok.nextToken());
-            this.y = Integer.parseInt(strtok.nextToken());
-        }
-
-        public String toString(){
-
-            return String.format("%s[%d][%d]",this.label,this.x,this.y);
         }
     }
 
@@ -58,13 +108,15 @@ public final class Reference
 
     public final String string;
 
-    public final Type type;
+    public final Reference.Type type;
 
     public final String label;
 
-    public final Array array;
+    public final SubReference.Array array;
 
-    public final Table table;
+    public final SubReference.Table table;
+
+    public final SubReference.Struct struct;
 
 
     public Reference(Argument argument, String string){
@@ -73,38 +125,60 @@ public final class Reference
             this.argument = argument;
             this.string = string;
 
-            StringTokenizer strtok = new StringTokenizer(string,"][ ");
-            switch(strtok.countTokens()){
-            case 1:
-                {
-                    this.label = strtok.nextToken();
-                    this.table = null;
-                    this.array = null;
-                    this.type = Type.Label;
-                }
-                break;
-            case 2:
-                {
-                    Array array = new Array(strtok);
+            if (0 < string.indexOf('.')){
+                StringTokenizer strtok = new StringTokenizer(string,". ");
+                switch(strtok.countTokens()){
+                case 2:
+                    {
+                        SubReference.Struct struct = new SubReference.Struct(strtok);
 
-                    this.label = array.label;
-                    this.table = null;
-                    this.array = array;
-                    this.type = Type.Array;
+                        this.label = struct.label;
+                        this.table = null;
+                        this.array = null;
+                        this.struct = struct;
+                        this.type = Reference.Type.STRUCT;
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException(string);
                 }
-                break;
-            case 3:
-                {
-                    Table table = new Table(strtok);
+            }
+            else if (0 < string.indexOf('[')){
 
-                    this.label = table.label;
-                    this.table = table;
-                    this.array = null;
-                    this.type = Type.Table;
+                StringTokenizer strtok = new StringTokenizer(string,"][ ");
+                switch(strtok.countTokens()){
+                case 2:
+                    {
+                        SubReference.Array array = new SubReference.Array(strtok);
+
+                        this.label = array.label;
+                        this.table = null;
+                        this.array = array;
+                        this.struct = null;
+                        this.type = Reference.Type.ARRAY;
+                    }
+                    break;
+                case 3:
+                    {
+                        SubReference.Table table = new SubReference.Table(strtok);
+
+                        this.label = table.label;
+                        this.table = table;
+                        this.array = null;
+                        this.struct = null;
+                        this.type = Reference.Type.TABLE;
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException(string);
                 }
-                break;
-            default:
-                throw new IllegalArgumentException(string);
+            }
+            else {
+                this.label = string.trim();
+                this.table = null;
+                this.array = null;
+                this.struct = null;
+                this.type = Reference.Type.DATA;
             }
         }
         else
@@ -112,6 +186,9 @@ public final class Reference
     }
 
 
+    public Parameter parameter(){
+        return this.type.parameter();
+    }
     public int hashCode(){
 
         return this.label.hashCode();

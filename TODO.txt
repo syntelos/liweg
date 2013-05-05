@@ -20,6 +20,12 @@
 ** Numeric
 ** Bit strings
 
+* Data Structure
+** C style "struct" syntax
+** assemble and disassemble as data structures
+** named members dereference by dot notation
+** contains DATA, ARRAY and TABLE members
+
 * Reference spaces
 ** Framebuffer (name/index)
 ** Program (name/index)
@@ -43,6 +49,34 @@
 ** switch (r)
 ** case (const)
 ** case-default
+
+* Function syntax
+** permit multiple functions in a file
+** C style
+** all function declarations employ "liweg" in the C return type
+
+* Extended Load/Store syntax for arrays and tables
+** dst = src
+** dst++
+** dst += regdata
+
+* References to array and table values
+** array[regdata]
+** table[regdata][regdata]
+
+* For loop compound expression
+** for regdata brop regdata; iterator
+** for initializer; regdata brop regdata; iterator
+
+* Optional parens
+** if (regdata brop regdata)
+** while (regdata brop regdata)
+** for (initializer; regdata brop regdata; iterator)
+
+* Optional braces
+** if/for/while (){
+** } else {
+** } // end
 
 * Design
 ** Instruction variable stream

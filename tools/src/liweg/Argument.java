@@ -12,15 +12,16 @@ public enum Argument {
 
     FB(Parameter.FB),
     PROG(Parameter.PROG),
-    REG(Parameter.REG),
+    REG(Parameter.REG_DATA,Parameter.REG_ARRAY,Parameter.REG_TABLE,Parameter.REG_STRUCT),
 
     TYPE(Parameter.TYPE),
     DATA(Parameter.DATA),
+    CHSTR(Parameter.CHSTR),
 
     BOOP(Parameter.BOOP),
     RLOP(Parameter.RLOP),
 
-    REGDATA(Parameter.REG,Parameter.DATA);
+    REGDATA(Parameter.REG_DATA,Parameter.REG_ARRAY,Parameter.REG_TABLE,Parameter.REG_STRUCT,Parameter.DATA);
 
 
     /**
@@ -40,10 +41,14 @@ public enum Argument {
         case PROG:
             return Parameter.PROG;
         case REG:
-            return Parameter.REG;
+            if (value instanceof Reference)
+                return ((Reference)value).parameter();
+            else
+                throw new IllegalArgumentException(value.getClass().getName());
+
         case REGDATA:
             if (value instanceof Reference)
-                return Parameter.REG;
+                return ((Reference)value).parameter();
             else if (value instanceof DataValue)
                 return Parameter.DATA;
             else

@@ -1,0 +1,43 @@
+liweg, liweg, a light weight graphical machine 
+
+   A liweg machine description informs the liweg assembler of any
+   application special function registers available to the liweg
+   program, as well as the gross register memory space.
+
+   The liweg machine description employs a format compatible with a C
+   programming language header file.  The assembler accepts recognized
+   syntax, and silently ignores unrecognized file content.
+
+   The assembler may recognize simple CPP "#define" expressions for
+   names starting with "LIWEG_VM_" or "LIWEG_SFR_".
+
+      #define LIWEG_VM_REGISTER_SPACE 1024 // (bytes)
+      #define LIWEG_SFR_RO_VM_PX
+      #define LIWEG_SFR_RO_VM_PC
+
+      #define LIWEG_SFR_RW_DISPLAY
+      #define LIWEG_SFR_RO_DISPLAY_W 132
+      #define LIWEG_SFR_RO_DISPLAY_H 32
+      #define LIWEG_SFR_RO_DISPLAY_D 1
+      #define LIWEG_SFR_RO_DISPLAY_COLOR false
+      #define LIWEG_SFR_RO_DISPLAY_GREYSCALE true
+
+   Machine description names are reserved strings, or register
+   description codes.  
+
+   The name "LIWEG_VM_REGISTER_SPACE" is a reserved string that
+   identifies the target's available register space for inheritance
+   and programming.
+
+   The register code prefix "LIWEG_SFR_" identifies a register
+   description following the code convention
+
+      <prefix> + ( "RO" | "RW" | "WO" ) + "_" + <register name>
+
+   
+   Liweg register names are not case sensitive.  The following
+   references to the mach register "VM_PX" are equivalent.
+
+      VM_PX
+      vm_px
+

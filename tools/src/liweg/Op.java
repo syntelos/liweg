@@ -27,13 +27,13 @@ public enum Op
      * 
      * Framebuffers are shared by all programs.
      */
-    FRAMEBUFFERS (0x00,"framebuffers",Argument.DATA),
+    FRAMEBUFFERS  (0x00,"framebuffers",Argument.DATA),
     /*
      * Store to indexed frame buffer
      * 
      * blit(<fb-index>,<x>,<y>,<bits>)
      */
-    BLIT         (0x01,"blit",Argument.REGDATA,Argument.REGDATA,Argument.REGDATA,Argument.REGDATA),
+    BLIT          (0x01,"blit",Argument.REGDATA,Argument.REGDATA,Argument.REGDATA,Argument.REGDATA),
     /*
      * Send indexed frame buffer to output or select indexed
      * framebuffer for output -- according to the system display
@@ -41,7 +41,7 @@ public enum Op
      * 
      * show(<fb-index>)
      */
-    SHOW         (0x02,"show",Argument.REGDATA),
+    SHOW          (0x02,"show",Argument.REGDATA),
     /*
      * SFR by value.
      * 
@@ -53,7 +53,7 @@ public enum Op
      * The SFR will be identified by "REG" and will have value
      * "REG" (r/o) from this register space.
      */
-    SFR_VAL     (0x03,"sfr_val",Argument.REG,Argument.REG),
+    SFR_VAL       (0x03,"sfr_val",Argument.REG,Argument.REG),
     /*
      * SFR by reference.
      * 
@@ -63,24 +63,24 @@ public enum Op
      * The SFR will be identified by "REG" and will reference register
      * "REG" (r/w) from this register space.
      */
-    SFR_REF      (0x04,"sfr_ref",Argument.REG,Argument.REG),
+    SFR_REF       (0x04,"sfr_ref",Argument.REG,Argument.REG),
     /*
      * The assembler directs the virtual machine to allocate a number
      * of program slots.  With the evaluation of this instruction, all
      * program slots are empty.
      */
-    PROGRAMS     (0x05,"programs",Argument.DATA),
+    PROGRAMS      (0x05,"programs",Argument.DATA),
     /*
      * The argument index is loaded with a number of bytes immediately
      * following this instruction in the stream.
      * 
      * load(<index>,<bytes>)
      */
-    LOAD_PROGRAM (0x06,"load",Argument.DATA,Argument.DATA),
+    LOAD_PROGRAM  (0x06,"load",Argument.DATA,Argument.DATA),
     /*
      * run(<prog-index>)
      */
-    RUN_PROGRAM  (0x07,"run",Argument.REGDATA),
+    RUN_PROGRAM   (0x07,"run",Argument.REGDATA),
     /*
      * Define program register allocation
      * 
@@ -97,83 +97,113 @@ public enum Op
      * Registers are automatically de-allocated with the completion of
      * the program.
      */
-    REGISTERS    (0x08,"registers",Argument.DATA),
+    REGISTERS     (0x08,"registers",Argument.DATA),
     /*
      * Define data register (initialized to value zero)
      *
      * data <name> <type>
      */
-    CREATE_DATA  (0x09,"data",Argument.REG,Argument.TYPE),
+    CREATE_DATA   (0x09,"data",Argument.REG,Argument.TYPE),
     /*
      * Define array register (initialized to value zero)
      *
      * array <name>[<w>]
      */
-    CREATE_ARRAY (0x0A,"array",Argument.REG,Argument.TYPE,Argument.REGDATA),
+    CREATE_ARRAY  (0x0A,"array",Argument.REG,Argument.TYPE,Argument.REGDATA),
     /*
-     * Define array register (initialized to value zero)
+     * Define table register (initialized to value zero)
      *
      * table <name>[<w>][<h>]
      */
-    CREATE_TABLE (0x0B,"table",Argument.REG,Argument.TYPE,Argument.REGDATA,Argument.REGDATA),
+    CREATE_TABLE  (0x0B,"table",Argument.REG,Argument.TYPE,Argument.REGDATA,Argument.REGDATA),
+    /*
+     * Define named membership array structure register (initialized to value zero)
+     *
+     * struct <name> number-of-members { membership(type,name)* }
+     */
+    CREATE_STRUCT (0x0C,"struct",Argument.REG,Argument.DATA,Argument.TYPE,Argument.CHSTR),
     /*
      * Store to register
      * 
      * <dst> = <ref|val>
      */
-    STORE_DATA   (0x0C,"store",Argument.REG,Argument.REGDATA),
+    STORE_DATA    (0x0D,"store",Argument.REG,Argument.REGDATA),
     /*
      * Store to table <dst> <x> <y> with <val>
      * 
      * <dst> = <array>[<x>]
      */
-    LOAD_ARRAY   (0x0D,"store",Argument.REG,Argument.REG,Argument.REGDATA),
+    LOAD_ARRAY    (0x0E,"store",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <array>[<x>] = src
      */
-    STORE_ARRAY  (0x0E,"store",Argument.REG,Argument.REGDATA,Argument.REG),
+    STORE_ARRAY   (0x0F,"store",Argument.REG,Argument.REGDATA,Argument.REGDATA),
     /*
      * Store to table <dst> <x> <y> with <val>
      * 
      * <dst> = <table>[<a>][<b>]
      */
-    LOAD_TABLE   (0x0F,"store",Argument.REG,Argument.REG,Argument.REGDATA,Argument.REGDATA),
+    LOAD_TABLE    (0x10,"store",Argument.REG,Argument.REG,Argument.REGDATA,Argument.REGDATA),
     /*
      * 
      * <table>[<a>][<b>] = <src>
      */
-    STORE_TABLE  (0x10,"store",Argument.REG,Argument.REGDATA,Argument.REGDATA,Argument.REG),
+    STORE_TABLE   (0x11,"store",Argument.REG,Argument.REGDATA,Argument.REGDATA,Argument.REGDATA),
+    /*
+     * Store to struct <dst> <x> <y> with <val>
+     * 
+     * <dst> = <struct>.<a>
+     * 
+     * A is an index.  The name of A is available from the CREATE_STRUCT instruction.
+     */
+    LOAD_STRUCT   (0x12,"store",Argument.REG,Argument.REG,Argument.REGDATA),
+    /*
+     * 
+     * <struct>.<a> = <src>
+     */
+    STORE_STRUCT  (0x13,"store",Argument.REG,Argument.REGDATA,Argument.REGDATA),
 
     /*
      * <dst> = <src> + <ref|val>
+     * <dst> += <ref|val>
+     * <dst> ++
      */
     ADD   (0x20,"add",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> - <ref|val>
+     * <dst> -= <ref|val>
+     * <dst> --
      */
     SUB   (0x21,"sub",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> * <ref|val>
+     * <dst> *= <ref|val>
+     * <dst> **
      */
     MUL   (0x22,"mul",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> / <ref|val>
+     * <dst> /= <ref|val>
      */
     DIV   (0x23,"div",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> % <ref|val>
+     * <dst> %= <ref|val>
      */
     MOD   (0x24,"mod",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> & <ref|val>
+     * <dst> &= <ref|val>
      */
     AND   (0x25,"and",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> | <ref|val>
+     * <dst> |= <ref|val>
      */
     NOR   (0x26,"nor",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
      * <dst> = <src> ^ <ref|val>
+     * <dst> ^= <ref|val>
      */
     XOR   (0x27,"xor",Argument.REG,Argument.REG,Argument.REGDATA),
     /*
@@ -269,7 +299,7 @@ public enum Op
      * Evaluate referenced code block for each element of the
      * referenced register.
      * 
-     * eval(<ref reg>,<ref prog|pc>)
+     * eval(<ref reg>,<ref prog>)
      * 
      * Register Data
      * 
@@ -283,7 +313,8 @@ public enum Op
      * referenced by the caller.
      * 
      * The special function registers "register_x" and "register_y"
-     * are maintained for each iteration of the evaluation sequence.
+     * are maintained for each iteration of the evaluation sequence
+     * with the current table index coordinates for the iteration.
      * References to "register" refer to <table> for table
      * instructions, and to <table x y> for non-table instructions.
      * 
@@ -297,6 +328,13 @@ public enum Op
      * each iteration of the evaluation sequence.  References to
      * "register" refer to <array> for array instructions, and to
      * <array x> for non-array instructions.
+     * 
+     * Register Struct
+     * 
+     * The "register" SFR is a member of the structure, with
+     * "register_x" its index, "register_type" its type descriptor,
+     * and "register_name" a zero terminated character string
+     * containing the name of the member in the structure.
      * 
      */
     EVAL      (0xF5,"eval",Argument.REG,Argument.PROG),

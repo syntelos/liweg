@@ -5,9 +5,9 @@ package liweg;
 
 import lxl.Map;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.DataOutputStream;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
@@ -131,20 +131,6 @@ public class Asm
                 ////////////////////////////////////////////
                 ////////////////////////////////////////////
             }
-        }
-    }
-    public void writeAS(PrintWriter out)
-        throws IOException
-    {
-        if (null != this.next && this.next != this){
-            this.next.writeAS(out);
-        }
-    }
-    public void writeVM(DataOutputStream out)
-        throws IOException
-    {
-        if (null != this.next && this.next != this){
-            this.next.writeVM(out);
         }
     }
 

@@ -11,9 +11,13 @@ import java.io.File;
 public enum Parameter {
     FB,
     PROG,
-    REG,
+    REG_DATA,
+    REG_ARRAY,
+    REG_TABLE,
+    REG_STRUCT,
     TYPE,
     DATA,
+    CHSTR,
     BOOP,
     RLOP;
 

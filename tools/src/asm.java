@@ -41,10 +41,9 @@ public class asm {
 
                         asm.assemble();
 
-                        //DataOutputStream bin = new DataOutputStream(new FileOutputStream(dst));
-                        PrintWriter bin = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dst),ASCII));
+                        DataOutputStream bin = new DataOutputStream(new FileOutputStream(dst));
                         try {
-                            asm.writeAS(bin);// (temp test)//asm.writeVM(bin);
+                            asm.writeVM(bin);
                         }
                         finally {
                             bin.flush();

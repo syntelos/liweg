@@ -1,0 +1,53 @@
+liweg, liweg, a light weight graphical machine language
+
+   The liweg programming language is a structured assembler language
+   with a C style syntax.  This syntax is a subset of C that supports
+   the assembly of source code into target code, as well as a source
+   code editor's C syntax formatting and highlighting.
+
+   Liweg programs disassemble into code that has a high fidelity to
+   the original source code.  This feature is very important to the
+   objective application domain of liweg, and permits a single object
+   file to perform the role of a canonical program representation.  In
+   the design objective domain, an end user target is programmed with
+   a binary code file from any virtual, versioned, or unversioned file
+   system.  Disassembly into a proper human computer interface permits
+   the application programming target to have a meaningful role in the
+   end user's interactive programming processes.  For example, an end
+   user may iterate a program through a work process that is focused
+   on the objectives of his or her work, and then save or backup
+   program binaries downloaded from working systems.  Likewise, a
+   working system is the source for programming iterations on its
+   functions.
+
+   The following example introduces a number of the principles and
+   features of liweg.
+
+      liweg display(){
+          blit( 0, 0, register_x, register);
+      }
+
+      liweg main(){
+          framebuffers(1);
+          data cc uint;
+          array glyph8 type:4 8;
+          glyph8 = {
+              0b0110,
+              0b1001,
+              0b1001,
+              0b1001,
+              0b1001,
+              0b1001,
+              0b1001,
+              0b0110
+          };
+
+          eval(glyph8, display);
+
+          show(0);
+      }
+
+   C style functions are liweg programs.  Liweg programs have a large
+   number of input registers, and so they are declared without an
+   equivalent set of arguments.  Liweg program registers are described
+   in source code as "data", "array" or "table", and are available

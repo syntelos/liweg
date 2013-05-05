@@ -1,7 +1,0 @@
-init
- var cc uint
- assignv cc 0
-loop
- forrv cc < 10
- addv cc 1
- end 
