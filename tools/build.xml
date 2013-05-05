@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="moops" default="update">
+<project name="liweg" default="update">
 
   <property name="src"     location="src"/>
   <property name="lib"     location="lib"/>
@@ -19,9 +19,9 @@
   <import file="${ant}/build.in.update.xml"/>
 
 
-  <target name="update" if="moops.update" depends="jar" description="Copy jar product to targets defined in '{user.home}/update.properties' by name 'moops.update'.">
+  <target name="update" if="liweg.update" depends="jar" description="Copy jar product to targets defined in '{user.home}/update.properties' by name 'liweg.update'.">
 
-    <do-update src="${target.jar}" tgt="${moops.update}" />
+    <do-update src="${target.jar}" tgt="${liweg.update}" />
   </target>
 
   <path id="lib.path">

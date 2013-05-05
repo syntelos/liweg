@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -11,7 +14,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 /**
- * moops assembler
+ * liweg assembler
  */
 public class asm {
 
@@ -20,9 +23,9 @@ public class asm {
 
     private final static void usage(){
         System.err.printf("Usage%n");
-        System.err.printf("    java -jar moops.jar asm file.moops%n");
+        System.err.printf("    java -jar liweg.jar asm file.liweg%n");
         System.err.printf("Produces%n");
-        System.err.printf("    file.mbin%n");
+        System.err.printf("    file.libin%n");
         System.exit(1);
     }
 
@@ -34,7 +37,7 @@ public class asm {
                 try {
                     LineNumberReader txt = new LineNumberReader(new InputStreamReader(new FileInputStream(src),ASCII));
                     try {
-                        final moops.Asm asm = new moops.Asm(src,txt);
+                        final liweg.Asm asm = new liweg.Asm(src,txt);
 
                         asm.assemble();
 
@@ -71,8 +74,8 @@ public class asm {
         final String ap = src.getAbsolutePath();
         final int idx = ap.lastIndexOf('.');
         if (0 < idx)
-            return new File( ap.substring(0,idx)+".mbin");
+            return new File( ap.substring(0,idx)+".libin");
         else
-            return new File( ap+".mbin");
+            return new File( ap+".libin");
     }
 }

@@ -1,14 +1,17 @@
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
 
 /**
  * jar file executable entry point
  * 
- *    java -cp moops-X.Y.Z.jar (asm|run)
- *    java -jar moops-X.Y.Z.jar (asm|run)
+ *    java -cp liweg-X.Y.Z.jar (asm|run)
+ *    java -jar liweg-X.Y.Z.jar (asm|run)
  */
 public class main {
 
     enum Opt {
-        ASM, RUN, HELP;
+        ASM, DASM, RUN, HELP;
 
         final static Opt For(String arg){
             try {
@@ -23,7 +26,7 @@ public class main {
 
     private final static void usage(){
         System.err.printf("Usage%n");
-        System.err.printf("    java -jar moops.jar (asm|run) ... %n");
+        System.err.printf("    java -jar liweg.jar (asm|dasm|run) input.file %n");
         System.exit(1);
     }
 
@@ -35,9 +38,13 @@ public class main {
                 asm.main(Shift(argv));
                 System.exit(0);
                 break;
+            case DASM:
+                dasm.main(Shift(argv));
+                System.exit(0);
+                break;
             case RUN:
-                System.err.println("TODO");
-                System.exit(1);
+                run.main(Shift(argv));
+                System.exit(0);
                 break;
             default:
                 usage();

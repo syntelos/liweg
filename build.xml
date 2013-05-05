@@ -1,11 +1,7 @@
-<project name="moops" default="all">
+<project name="liweg" default="all">
 
  <target name="all">
-  <ant dir="DigiVmoopsNA" />
-  <ant dir="DigiVmoopsNB" />
-  <ant dir="DigiVmoopsUA" />
-  <ant dir="DigiVmoopsUI" />
-  <ant dir="DigiVmoopsApplet" />
-  <ant dir="DigiVmoopsConsole" />
+  <ant dir="tools" />
+  <ant dir="vm" />
  </target>
 </project>

@@ -1,4 +1,7 @@
-package moops;
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
+package liweg;
 
 import java.io.IOException;
 import java.io.DataOutputStream;
@@ -34,10 +37,10 @@ public class Stream
 
 
 
-    protected Stream(){
+    protected Stream(Op op, Parameter.Value[] params){
         super();
-        this.operator = null;
-        this.parameters = null;
+        this.operator = op;
+        this.parameters = params;
     }
     public Stream(Stream p, Op op, Parameter.Value[] params){
         super();

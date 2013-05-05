@@ -1,4 +1,7 @@
-package moops;
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
+package liweg;
 
 /**
  * Bit string, integer and floating point register (variable) type

@@ -1,4 +1,7 @@
-package moops;
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
+package liweg;
 
 /**
  * Parse a literal based on its self evident appearance in order to

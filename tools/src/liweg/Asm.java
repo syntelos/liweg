@@ -1,4 +1,7 @@
-package moops;
+/*
+ * Copyright (C) 2013 John Pritchard.  All rights reserved.
+ */
+package liweg;
 
 import lxl.Map;
 
@@ -31,7 +34,7 @@ public class Asm
     public Asm(File file, LineNumberReader src)
         throws IOException
     {
-        super();
+        super(Op.REGISTERS,new Parameter.Value[1]);
         if (null != src){
 
             for (String line = src.readLine(); null != line; line = src.readLine()){
