@@ -114,4 +114,15 @@ public class Stream
             this.next.writeVM(out);
         }
     }
+    public final void writeVM(TargetFileLibin file) 
+        throws IOException
+    {
+        DataOutputStream out = file.encode();
+        try {
+            this.writeVM(out);
+        }
+        finally {
+            out.close();
+        }
+    }
 }

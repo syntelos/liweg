@@ -3,19 +3,38 @@
  */
 package liweg.parser;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+
 /**
  *
  */
-public abstract class Expression
-    extends Object
+public class Expression
+    extends lxl.ArrayList
 {
 
     public final Expression p;
-    public final String expression;
+
 
     public Expression(Expression p, String expression){
         super();
         this.p = p;
-        this.expression = expression;
+        this.add(expression);
+    }
+    public Expression(SourceFile src, LineNumberReader in)
+        throws IOException
+    {
+        super();
+        this.p = null;
+        String line;
+        while (null != (line = in.readLine())){
+            ///////////////////////////////////////
+            /*
+             * use regular expressions to sort input into subclass
+             * constructors
+             */
+            ///////////////////////////////////////
+            this.add(line);
+        }
     }
 }

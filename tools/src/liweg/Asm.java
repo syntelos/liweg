@@ -3,6 +3,8 @@
  */
 package liweg;
 
+import liweg.parser.Expression;
+
 import lxl.Map;
 
 import java.io.DataOutputStream;
@@ -31,42 +33,20 @@ public class Asm
     private final Map<Reference,Register> registers = new Map();
 
 
-    public Asm(File file, LineNumberReader src)
+    public Asm(SourceFileLiweg file)
         throws IOException
     {
         super(Op.REGISTERS,new Parameter.Value[1]);
+
+        Expression src = file.read();
         if (null != src){
+            for (Object sexpr: src){
 
-            for (String line = src.readLine(); null != line; line = src.readLine()){
+                if (sexpr instanceof Expression){
 
-                int lno = src.getLineNumber();
-
-                if (0 < line.length()){
-
-                    String[] tokens = Asm.Split(line," \t");
-
-                    if (null != tokens && 0 < tokens.length){
-
-                        final String tokop = tokens[0];
-
-                        final Op operator = Op.For(tokop);
-
-                        if (null != operator){
-
-                            Parameter.Value[] parameters = operator.synthesize(this,tokens,file,lno,line);
-
-                            this.synthesis = new Stream(this.synthesis,operator,parameters);
-                        }
-                        else {
-
-                            throw new IllegalStateException(String.format("%s:%d: unknown op '%s' in: %s",file,lno,tokop,line));
-                        }
-                    }
                 }
             }
         }
-        else
-            throw new IllegalArgumentException("Missing operator");
     }
 
 
@@ -115,7 +95,7 @@ public class Asm
      * Allocate variable table by name, resolve lables, collapse
      * values and types, validate code blocks.
      */
-    public void assemble(){
+    public Asm assemble(){
 
         this.registers.clear();
 
@@ -132,6 +112,7 @@ public class Asm
                 ////////////////////////////////////////////
             }
         }
+        return this;
     }
 
 

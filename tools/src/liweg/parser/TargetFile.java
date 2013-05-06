@@ -7,31 +7,31 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
  * Generic parser driver
  */
-public class SourceFile
+public class TargetFile
     extends java.io.File
 {
     public final static Charset UTF8 = Charset.forName("UTF-8");
     public final static Charset ASCII = Charset.forName("US-ASCII");
 
 
-    public SourceFile(java.io.File dir, java.lang.String file){
+    public TargetFile(java.io.File dir, java.lang.String file){
         super(dir,file);
     }
-    public SourceFile(java.lang.String file){
+    public TargetFile(java.lang.String file){
         super(file);
     }
 
 
-    public LineNumberReader text() throws IOException {
-        return new LineNumberReader(new InputStreamReader(new FileInputStream(this),UTF8));
+    public PrintWriter text() throws IOException {
+        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(this),UTF8));
     }
     public DataOutputStream encode() throws IOException {
         return new DataOutputStream(new FileOutputStream(this));

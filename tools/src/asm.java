@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2013 John Pritchard.  All rights reserved.
  */
+import liweg.SourceFileLiweg;
+import liweg.TargetFileLibin;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -18,7 +20,7 @@ import java.nio.charset.Charset;
  */
 public class asm {
 
-    private final static Charset ASCII = Charset.forName("US-ASCII");
+
 
 
     private final static void usage(){
@@ -31,37 +33,21 @@ public class asm {
 
     public static void main(String[] argv){
         if (1 == argv.length){
-            final File src = new File(argv[0]);
+
+            final SourceFileLiweg src = new SourceFileLiweg(argv[0]);
             if (src.isFile()){
-                final File dst = Src2Bin(src);
+                final TargetFileLibin dst = new TargetFileLibin(Src2Bin(src));
                 try {
-                    LineNumberReader txt = new LineNumberReader(new InputStreamReader(new FileInputStream(src),ASCII));
-                    try {
-                        final liweg.Asm asm = new liweg.Asm(src,txt);
-
-                        asm.assemble();
-
-                        DataOutputStream bin = new DataOutputStream(new FileOutputStream(dst));
-                        try {
-                            asm.writeVM(bin);
-                        }
-                        finally {
-                            bin.flush();
-                            bin.close();
-                        }
-                    }
-                    finally {
-                        txt.close();
-                    }
+                    new liweg.Asm(src).assemble().writeVM(dst);
                 }
                 catch (IOException exc){
-                    System.err.printf("asm: error: while reading file %s%n\t",src);
+                    System.err.printf("asm: error assembling file '%s'%n\t",src);
                     exc.printStackTrace();
                     System.exit(1);
                 }
             }
             else {
-                System.err.printf("asm: error: file not found %s%n",src);
+                System.err.printf("asm: error: file not found '%s'%n",src);
                 System.exit(1);
             }
         }
@@ -69,12 +55,49 @@ public class asm {
             usage();
     }
 
-    private final static File Src2Bin(File src){
+
+    private final static String Src2Bin(File src){
+
         final String ap = src.getAbsolutePath();
-        final int idx = ap.lastIndexOf('.');
-        if (0 < idx)
-            return new File( ap.substring(0,idx)+".libin");
-        else
-            return new File( ap+".libin");
+
+        final int dot = ap.lastIndexOf('.');
+        /*
+         * Rewrite string "src" to "bin"
+         */
+        if (0 < dot){
+            /*
+             * Have a '.' in the file name
+             */
+            int sep = ap.lastIndexOf(File.separatorChar);
+            if (0 > sep && '/' != File.separatorChar){
+                /*
+                 * Accept universal front-slash
+                 */
+                sep = ap.lastIndexOf('/');
+            }
+
+            if (-1 < sep){
+
+                if (sep < dot){
+                    /*
+                     * Truncate stem in expected case for absolute path
+                     *
+                     * "abc/def.ghi"
+                     */
+                    return (ap.substring(0,dot)+".libin");
+                }
+            }
+            else {
+                /*
+                 * Truncate stem in unexpected case of absolute path
+                 * lacking any path component
+                 */
+                return (ap.substring(0,dot)+".libin");
+            }
+        }
+        /*
+         * Append, send to target file
+         */
+        return (ap+".libin");
     }
 }
