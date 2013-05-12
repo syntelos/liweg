@@ -29,6 +29,21 @@
       <include name="**/*.jar" />
     </fileset>
   </path>
+  <path id="lib.path.jauk">
+    <fileset dir="${lib}">
+      <include name="**/jauk-*.jar" />
+    </fileset>
+  </path>
+  <path id="lib.path.joda-time">
+    <fileset dir="${lib}">
+      <include name="**/joda-time-*.jar" />
+    </fileset>
+  </path>
+  <path id="lib.path.lxl">
+    <fileset dir="${lib}">
+      <include name="**/lxl-*.jar" />
+    </fileset>
+  </path>
 
 
   <target name="jar" depends="compile">
@@ -39,15 +54,13 @@
       </fileset>
     </delete>
 
-    <java outputproperty="lib.manifest" classname="LibClasspath" failonerror="true" fork="true" classpath="${ant}" logError="true">
-      <arg value="${toString:lib.path}"/>
-    </java>
-
     <jar jarfile="${target.jar}" basedir="${bin}" >
       <manifest>
         <attribute name="Main-Class" value="${main.class}"/>
-        <attribute name="Class-Path" value="${lib.manifest}"/>
       </manifest>
+      <zipfileset src="${toString:lib.path.jauk}"/>
+      <zipfileset src="${toString:lib.path.joda-time}"/>
+      <zipfileset src="${toString:lib.path.lxl}"/>
     </jar>
 
     <delete>

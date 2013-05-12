@@ -1,8 +1,7 @@
 
 liweg, a light weight graphical virtual machine
 
-  Far smaller than many virtual machines, liweg is designed for
-  application programming on a very small scale.  
+  Liweg is designed for application programming on a very small scale.
 
   The objective for applications of liweg is to rapidly and securely
   replace an application programming layer of software by the end user
