@@ -3,12 +3,12 @@
  */
 package liweg.parser;
 
+import jauk.Scanner;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -30,8 +30,8 @@ public class SourceFile
     }
 
 
-    public LineNumberReader text() throws IOException {
-        return new LineNumberReader(new InputStreamReader(new FileInputStream(this),UTF8));
+    public Scanner text() throws IOException {
+        return new Scanner(this,UTF8);
     }
     public DataOutputStream encode() throws IOException {
         return new DataOutputStream(new FileOutputStream(this));

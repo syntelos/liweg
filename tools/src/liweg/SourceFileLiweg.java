@@ -5,6 +5,8 @@ package liweg;
 
 import liweg.parser.Expression;
 
+import jauk.Scanner;
+
 import java.io.IOException;
 import java.io.LineNumberReader;
 
@@ -24,7 +26,7 @@ public class SourceFileLiweg
 
 
     public Expression read() throws IOException {
-        LineNumberReader txt = this.text();
+        Scanner txt = this.text();
         try {
             return new liweg.parser.Expression(this,txt);
         }
