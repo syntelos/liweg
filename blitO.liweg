@@ -1,7 +1,13 @@
 /*                     -*-C-*-
  */
 liweg display(){
-    blit( 0, 0, register_x, register);
+    data fb uint;
+    data x uint;
+    data y uint;
+    fb = 0;
+    x = 0;
+    y = register_x;
+    blit( fb, x, y, register);
 }
 
 liweg main(){

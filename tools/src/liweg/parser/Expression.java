@@ -61,24 +61,21 @@ public class Expression
         int lno;
 
         while (in.isNotEmpty()){
-
+            lno = in.currentLine();
             expr = in.next(Comment.PATTERN);
             if (null != expr){
-                lno = in.currentLine();
 
                 this.add(new Comment(this,lno,expr));
             }
             else {
                 expr = in.next(Define.PATTERN);
                 if (null != expr){
-                    lno = in.currentLine();
 
                     this.add(new Define(this,lno,expr));
                 }
                 else {
                     expr = in.next(Block.PATTERN);
                     if (null != expr){
-                        lno = in.currentLine();
 
                         this.add(new Block(this,lno,expr));
                     }
@@ -147,7 +144,7 @@ public class Expression
     public final String toString(){
         if (null != this.text){
 
-            return String.format("%s:%d:\t%s",this.getName(),this.linenumber,this.getText());
+            return String.format("%s:%d:%n%s",this.getName(),this.linenumber,this.getText());
         }
         else {
 

@@ -34,6 +34,9 @@ public class Block
 
         final State begin = new State(true);
         {
+            /*
+             * ASCII text range
+             */
             final State text = new State(true);
             final State nest = new State(true);
             final State end = new State(true);
@@ -41,10 +44,12 @@ public class Block
             begin.addTransition(new Transition('{',text));
             text.addTransition(new Transition(' ','z',text));
             text.addTransition(new Transition('|',text));
+            text.addTransition(new Transition('~',text));
             text.addTransition(new Transition('{',nest));
             text.addTransition(new Transition('}',end));
             nest.addTransition(new Transition(' ','z',nest));
             nest.addTransition(new Transition('|',nest));
+            nest.addTransition(new Transition('~',nest));
             nest.addTransition(new Transition('}',text));
         }
         final Automaton BlockBody = new Automaton(begin);
