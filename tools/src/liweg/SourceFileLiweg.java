@@ -34,7 +34,36 @@ public class SourceFileLiweg
             txt.close();
         }
     }
-
+    /**
+     * Test
+     */
+    static void usage(){
+        System.err.println("Usage");
+        System.err.println();
+        System.err.println("    liweg.SourceFileLiweg  <file.liweg>");
+        System.err.println();
+        System.err.println("Description");
+        System.err.println();
+        System.err.println("    Print trace of parsed file.");
+        System.err.println();
+        System.exit(1);
+    }
+    public static void main(String[] argv){
+        if (0 < argv.length){
+            SourceFileLiweg src = new SourceFileLiweg(argv[0]);
+            try {
+                Expression expr = src.read();
+                expr.trace(System.out);
+                System.exit(0);
+            }
+            catch (IOException exc){
+                exc.printStackTrace();
+                System.exit(1);
+            }
+        }
+        else
+            usage();
+    }
 }
             /*
             for (String line = src.readLine(); null != line; line = src.readLine()){

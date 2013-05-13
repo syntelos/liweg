@@ -7,7 +7,7 @@ import jauk.Pattern;
 import jauk.Scanner;
 
 import java.io.IOException;
-import java.io.LineNumberReader;
+import java.io.PrintStream;
 
 /**
  *
@@ -38,17 +38,29 @@ public class Expression
         else
             throw new IllegalArgumentException();
     }
+    /*
+     */
     public Expression(SourceFile src, Scanner in)
         throws IOException
     {
         super();
         this.p = null;
         this.linenumber = in.currentLine();
+        /*
+         */
+        this.parse(src,in);
+    }
 
+
+    /*
+     */
+    public Expression parse(SourceFile src, Scanner in)
+        throws IOException
+    {
         String expr;
         int lno;
 
-        while (true){
+        while (in.isNotEmpty()){
 
             expr = in.next(Comment.PATTERN);
             if (null != expr){
@@ -64,14 +76,21 @@ public class Expression
                     this.add(new Define(this,lno,expr));
                 }
                 else {
+                    expr = in.next(Block.PATTERN);
+                    if (null != expr){
+                        lno = in.currentLine();
 
-                    throw new Syntax(this,in,"Unrecognized input");
+                        this.add(new Block(this,lno,expr));
+                    }
+                    else {
+
+                        throw new Syntax(this,in,"Unrecognized input");
+                    }
                 }
             }
         }
+        return this;
     }
-
-
     public final int getLinenumber(){
 
         return this.linenumber;
@@ -111,27 +130,10 @@ public class Expression
     public final Expression getParent(){
         return this.p;
     }
-    public final String trace(){
+    public final void trace(PrintStream out){
 
-        Expression child = this;
-        Expression parent = this.p;
-        if (null != parent){
-            StringBuilder string = new StringBuilder();
+        Trace(this,out);
 
-            while (null != parent && (!parent.contains(child))){
-                final int d = child.depth();
-
-                string.append(String.format("trace depth %02d ------------------ %02d ------------------ %02d ------------------%n",d,d,d));
-
-                string.append(child.toString(d));
-
-                child = parent;
-                parent = parent.getParent();
-            }
-            return string.toString();
-        }
-        else
-            return this.toString();
     }
     public final int depth(){
         int d = 0;
@@ -143,29 +145,14 @@ public class Expression
         return d;
     }
     public final String toString(){
-
-        return this.toString(1);
-    }
-    public String toString(int indent){
-        StringBuilder string = new StringBuilder();
-
-        Indent(indent,string);
-
         if (null != this.text){
 
-            string.append(String.format("%s:%d:\t%s%n",this.getName(),this.linenumber,this.getText()));
+            return String.format("%s:%d:\t%s",this.getName(),this.linenumber,this.getText());
         }
         else {
 
-            string.append(String.format("%s:%d:%n",this.getName(),this.linenumber));
+            return String.format("%s:%d:",this.getName(),this.linenumber);
         }
-
-
-        for (Expression child: this){
-
-            string.append(child.toString(indent+1));
-        }
-        return string.toString();
     }
     @Override
     public final int indexOf(Expression child){
@@ -181,10 +168,25 @@ public class Expression
 
         return expressionclass.getSimpleName();
     }
-    public final static void Indent(int indent, StringBuilder string){
+    public final static void Indent(int indent, PrintStream out){
+
         for (int cc = 0; cc < indent; cc++){
-            string.append('\t');
+            out.print('\t');
         }
     }
+    public final static void Trace(Expression child, PrintStream out){
 
+        final int d = child.depth();
+
+        out.printf("trace depth %02d ------------------ %02d ------------------ %02d ------------------%n",d,d,d);
+
+        Indent(d,out);
+
+        out.println(child.toString());
+
+        for (Expression gchild: child){
+
+            Trace(gchild,out);
+        }
+    }
 }

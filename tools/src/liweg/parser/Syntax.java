@@ -19,7 +19,7 @@ public final class Syntax
 
 
     public Syntax(Expression expression, Scanner scanner, String msg){
-        super(msg+"\n\t"+scanner.currentLine()+": "+scanner.nextCapture()+"\n"+expression.trace());
+        super(msg+"\n\t"+scanner.currentLine()+": "+scanner.nextCapture()+"\n"+expression.toString());
         this.expression = expression;
     }
 
