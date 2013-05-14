@@ -32,25 +32,36 @@ public class Block
     static {
         final NamedAutomata pcx = Builtin.Init();
 
-        final State begin = new State(true);
+        final State begin = new State("begin",true);
         {
             /*
              * ASCII text range
              */
-            final State text = new State(true);
-            final State nest = new State(true);
-            final State end = new State(true);
+            final State text = new State("text",true);
+            final State nest01 = new State("nest01",true);
+            final State nest02 = new State("nest02",true);
+
+            final State end = new State("end",true); // '#' Empty automaton
 
             begin.addTransition(new Transition('{',text));
-            text.addTransition(new Transition(' ','z',text));
+            begin.addTransition(new Transition('}',end));
+
+            text.addTransition(new Transition('{',nest01));
+            text.addTransition(new Transition('}',end));
+            text.addTransition(new Transition('\t','z',text));
             text.addTransition(new Transition('|',text));
             text.addTransition(new Transition('~',text));
-            text.addTransition(new Transition('{',nest));
-            text.addTransition(new Transition('}',end));
-            nest.addTransition(new Transition(' ','z',nest));
-            nest.addTransition(new Transition('|',nest));
-            nest.addTransition(new Transition('~',nest));
-            nest.addTransition(new Transition('}',text));
+
+            nest01.addTransition(new Transition('}',text));
+            nest01.addTransition(new Transition('{',nest02));
+            nest01.addTransition(new Transition('\t','z',nest01));
+            nest01.addTransition(new Transition('|',nest01));
+            nest01.addTransition(new Transition('~',nest01));
+
+            nest02.addTransition(new Transition('}',nest01));
+            nest02.addTransition(new Transition('\t','z',nest02));
+            nest02.addTransition(new Transition('|',nest02));
+            nest02.addTransition(new Transition('~',nest02));
         }
         final Automaton BlockBody = new Automaton(begin);
 
@@ -60,7 +71,7 @@ public class Block
                 {"Block.Body",BlockBody},
                 {"Block.Tail",BasicAutomata.MakeString("}")},
             });
-        PATTERN = new jauk.Re(cx,"<_>*(liweg|for|while|if)~(<Block.Head>)*<Block.Body>");
+        PATTERN = new jauk.Re(cx,"~(<Block.Head>)*<Block.Body>");
     }
 
 

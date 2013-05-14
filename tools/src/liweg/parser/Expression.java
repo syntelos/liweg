@@ -48,13 +48,13 @@ public class Expression
         this.linenumber = in.currentLine();
         /*
          */
-        this.parse(src,in);
+        this.top(src,in);
     }
 
 
     /*
      */
-    public Expression parse(SourceFile src, Scanner in)
+    public final Expression top(SourceFile src, Scanner in)
         throws IOException
     {
         String expr;
