@@ -1,0 +1,6 @@
+              -*-outline-*-
+
+* jauk::automaton.RegExp new Compiled(..., this.compileForTime())
+** compileForTime ?= minimize
+** ? use compileForTime from jauk.Re and liweg.parser.Block ? 
+

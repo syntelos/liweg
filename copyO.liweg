@@ -1,0 +1,21 @@
+/*                     -*-C-*-
+ */
+liweg write(){
+    data dev uint;
+    data register_x uint;
+    data register data array;
+    copy( dev, register_x, register);
+}
+
+/*
+ * This program writes to the internet on the application stream.
+ * The application has one stream and one format on that stream.
+ */
+liweg main(){
+    tcp(1);
+    array data struct Data;
+
+    eval(data, write);
+
+    show(0);
+}

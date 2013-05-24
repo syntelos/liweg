@@ -27,6 +27,40 @@ package liweg;
  * </tr>
  * </table>
  * 
+ * <h3>Type Code</h3>
+ * 
+ * <p> The <code>sign</code> and <code>fp</code> bits are a type code
+ * having four unique values. </p>
+ * 
+ * <h4>Unsigned Integer</h4>
+ * 
+ * <p> The type code <code>[sign: 0, fp: 0]</code> identifies the
+ * floating point type.  This type has any non zero
+ * <code>length</code> number of bits from one to sixty four.  </p>
+ * 
+ * <p> The <code>length</code> value of zero may be employed to denote
+ * a stream having out of band I/O control, or it may denote an
+ * invalid or null type, depending on the context usage protocol. </p>
+ *
+ * <h4>Signed Integer</h4>
+ * 
+ * <p> The type code <code>[sign: 1, fp: 0]</code> identifies a signed
+ * integer type.  This type has <code>length</code> number of bits in
+ * 8 bit multiples, exclusively. </p>
+ *
+ * <h4>Signed Floating point</h4>
+ * 
+ * <p> The type code <code>[sign: 1, fp: 1]</code> identifies the
+ * floating point type.  This type has two valid values for
+ * <code>length</code>, 32 or 64. </p>
+ *
+ * <h4>List of Octet</h4>
+ * 
+ * <p> The type code <code>[sign: 0, fp: 1]</code> ("unsigned fp")
+ * identifies the octet list type. </p>
+ * 
+ * <p> This type has a payload of zero to sixty four bytes. </p>
+ * 
  * @see Op.java
  * @see OpArg.java
  */

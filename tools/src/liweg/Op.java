@@ -15,9 +15,26 @@ public enum Op
     implements AS
 {
     /*
-     * The assembler directs the virtual machine to allocate a number
-     * of frame buffers for the system display width and height and
-     * depth.
+     * The assembler directs the virtual machine to identify a port
+     * device register with the device index argument.
+     * 
+     */
+    ECHO          (0x00,"echo",Argument.DATA),
+    /*
+     * The assembler directs the virtual machine to identify a port
+     * device register with the device index argument.
+     * 
+     */
+    REPLY         (0x01,"reply",Argument.DATA),
+    /*
+     * The assembler directs the virtual machine to identify a port
+     * device register with the device index argument.
+     * 
+     */
+    REQUEST       (0x02,"request",Argument.DATA),
+    /*
+     * The assembler directs the virtual machine to identify a
+     * framebuffer device register with the device index argument.
      * 
      * The special function registers "fb_d", "fb_w" and "fb_h" are
      * defined read only with the system display depth, width and
@@ -27,21 +44,25 @@ public enum Op
      * 
      * Framebuffers are shared by all programs.
      */
-    FRAMEBUFFERS  (0x00,"framebuffers",Argument.DATA),
+    FRAMEBUFFERS  (0x03,"framebuffers",Argument.DATA),
     /*
-     * Store to indexed frame buffer
+     * Store to indexed virtual device (framebuffer, port, etc)
      * 
-     * blit(<fb-index>,<x>,<y>,<bits>)
+     * copy(<device-index>,<x>,<y>,<bits>)
      */
-    BLIT          (0x01,"blit",Argument.REGDATA,Argument.REGDATA,Argument.REGDATA,Argument.REGDATA),
+    COPY          (0x04,"copy",Argument.REGDATA,Argument.REGDATA,Argument.REGDATA,Argument.REGDATA),
     /*
-     * Send indexed frame buffer to output or select indexed
-     * framebuffer for output -- according to the system display
-     * architecture as synchronous or asynchronous.
+     * Send indexed device buffer to output as complete.
      * 
-     * show(<fb-index>)
+     * send(<device-index>)
+     * 
+     * Directs a framebuffer to write its image to its physical
+     * interface.  
+     * 
+     * Permits port transaction interfaces to accept multiple copies
+     * in state building with a terminal call operation.
      */
-    SHOW          (0x02,"show",Argument.REGDATA),
+    SEND          (0x05,"send",Argument.REGDATA),
     /*
      * SFR by value.
      * 
@@ -53,7 +74,7 @@ public enum Op
      * The SFR will be identified by "REG" and will have value
      * "REG" (r/o) from this register space.
      */
-    SFR_VAL       (0x03,"sfr_val",Argument.REG,Argument.REG),
+    SFR_VAL       (0x06,"sfr_val",Argument.REG,Argument.REG),
     /*
      * SFR by reference.
      * 

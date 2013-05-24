@@ -71,7 +71,7 @@ public class Block
                 {"Block.Body",BlockBody},
                 {"Block.Tail",BasicAutomata.MakeString("}")},
             });
-        PATTERN = new jauk.Re(cx,"~(<Block.Head>)*<Block.Body>");
+        PATTERN = new jauk.Re(cx,"~(<Block.Head>)*<Block.Body>",false);
     }
 
 

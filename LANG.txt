@@ -24,7 +24,7 @@ liweg, liweg, a light weight graphical machine language
    features of liweg.
 
       liweg display(){
-          blit( 0, 0, register_x, register);
+          copy( 0, 0, register_x, register);
       }
 
       liweg main(){
